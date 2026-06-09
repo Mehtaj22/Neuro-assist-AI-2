@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - NeuroAssist AI</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./Login-Register.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+  
+
+    <div class="container">
+    <div class="logo-section">
+      <a href="./Homepage.html" class="anchor">
+      <img src="./Images/Homepage/Logo.png" class="logo"/>
+      <h2 class="head">NeuroAssist AI</h2>
+      </a>
+    </div>
+
+    <nav class="nav">
+      <a href="./Homepage.html" class="dragon">Home</a>
+      <a href="./AboutUs.html" class="dragon">About</a>
+      <a href="./ContactUs.html" class="dragon">Contact us</a>
+      <a href="./Pricing.html" class="dragon">Pricing</a>
+      
+      
+      <div class="btns">
+        <button id="openProfile" class="btn login">Profile</button>
+        <a href="./Login.html" class="btn login">Log In</a>
+      </div>
+    </nav>
+  </div>
+
+    <section class="auth-section">
+      <div class="auth-layout">
+
+        <div class="auth-copy">
+          <p class="hero-badge">Welcome Back</p>
+          <h1 class="auth-hero-title">Login to <span>NeuroAssist AI</span></h1>
+          <p class="auth-hero-text">
+            Continue your journey with NeuroAssist AI and access smart tools designed
+            to help students learn faster, summarize better, and work more efficiently.
+          </p>
+
+          <div class="auth-points">
+            <div class="point">
+              <i class="fa-solid fa-check"></i>
+              <span>AI-powered summaries</span>
+            </div>
+            <div class="point">
+              <i class="fa-solid fa-check"></i>
+              <span>Cleaner productivity workflow</span>
+            </div>
+            <div class="point">
+              <i class="fa-solid fa-check"></i>
+              <span>Secure account access</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="auth-container">
+          <div class="auth-card-glow"></div>
+
+          <h2 class="auth-title">Welcome Back</h2>
+          <p class="auth-subtitle">Login to continue using NeuroAssist AI</p>
+
+          <form class="auth-form" id="loginForm">
+            <div class="form-group">
+              <label for="login-email">Email Address</label>
+              <input type="email" id="login-email" placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-group">
+              <label for="login-password">Password</label>
+              <input type="password" id="login-password" placeholder="Enter your password" required>
+            </div>
+
+            <button type="submit" class="auth-btn">Login</button>
+
+            <p class="auth-switch">
+              Don’t have an account?
+              <a href="./Register.html">Register</a>
+            </p>
+          </form>
+        </div>
+
+      </div>
+    </section>
+
+      <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyB4mQaEskMJQiwNz-bVJnRYsd2z-EeaBsA",
+          authDomain: "ai-summarize-system.firebaseapp.com",
+          projectId: "ai-summarize-system",
+          storageBucket: "ai-summarize-system.firebasestorage.app",
+          messagingSenderId: "588246353472",
+          appId: "1:588246353472:web:1535ae40f7ace9b184c1a5"
+        };
+
+        const auth = getAuth(initializeApp(firebaseConfig));
+
+        document.getElementById("loginForm").addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const email = document.getElementById("login-email").value.trim();
+          const password = document.getElementById("login-password").value;
+          const btn = e.target.querySelector("button[type='submit']");
+
+          btn.disabled = true;
+          btn.textContent = "Logging in...";
+
+          try {
+            await signInWithEmailAndPassword(auth, email, password);
+            window.location.href = "./Summarization.html";
+          } catch (err) {
+            alert(friendlyError(err.code) + " ❌");
+            btn.disabled = false;
+            btn.textContent = "Login";
+          }
+        });
+
+        function friendlyError(code) {
+          switch (code) {
+            case "auth/user-not-found":
+            case "auth/wrong-password":
+            case "auth/invalid-credential": return "Invalid email or password";
+            case "auth/invalid-email":      return "Invalid email address";
+            case "auth/too-many-requests":  return "Too many attempts. Try again later";
+            default:                        return "Login failed. Please try again";
+          }
+        }
+      </script>
+
+    <footer class="footer">
+  <div class="footer-container">
+
+    <div class="footer-col">
+      <div class="footer-brand">
+        <div class="footer-brand-top">
+          <a href="./Homepage.html" class="anchor">
+          <img src="./Images/Homepage/Logo.png" class="neuro" alt="NeuroAssist AI Logo">
+          <h2 class="footer-logo">NeuroAssist AI <br> Pvt. Ltd.</h2>
+          </a>
+        </div>
+        <p class="footer-text">Helping students learn smarter with AI.</p>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <div class="footer-group">
+        <h2>Quick Links</h2>
+        <a class="link" href="./Homepage.html">Home</a>
+        <a class="link" href="./AboutUs.html">About</a>
+        <a class="link" href="./ContactUs.html">Contact</a>
+        <a class="link" href="./Login.html">Login</a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <div class="footer-group">
+        <h2>Contact</h2>
+
+        <a class="connect" href="mailto:neuroassistai16@gmail.com">
+          <i class="fa-solid fa-envelope"></i>
+          neuroassistai16@gmail.com
+        </a>
+
+        <a class="connect" href="https://www.instagram.com/" target="_blank">
+          <i class="fa-brands fa-instagram"></i>
+          Instagram
+        </a>
+
+        <a class="connect" href="https://wa.me/91XXXXXXXXXX" target="_blank">
+          <i class="fa-brands fa-whatsapp"></i>
+          WhatsApp
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <div class="footer-group">
+        <h2>Address</h2>
+        <p class="footer-text address-text">
+          <i class="fa-solid fa-location-dot"></i>
+          Tribune Buildings,<br>
+          MRD Road, Chandmari,<br>
+          Guwahati-781003
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="line"></div>
+  <p class="footer-copy">© 2026 NeuroAssist AI. All rights reserved.</p>
+</footer>
+
+  <div id="profileContainer" class="profile-hidden">
+
+  <div class="big">
+  
+
+    <div class="profile">
+      <img src="./Images/Homepage/Mehtaj.jpeg" class="pro"/>
+      <h1 class="name">Mehtaj Alam</h1>
+      <p class="username">@mehtajalam5</p>
+      <p class="bio">Passionate web developer building something incredible.</p>
+    </div>
+
+    <div class="info">
+      <p>email:mehtajalam5@gmail.com</p>
+      <p>Location: india</p>
+    </div>
+
+    <button class="btn">Edit profile</button>
+
+  </div>
+
+</div>
+
+<script>
+const btn = document.getElementById("openProfile");
+const profile = document.getElementById("profileContainer");
+
+btn.addEventListener("click", () => {
+  profile.classList.toggle("profile-show");
+  profile.classList.toggle("profile-hidden");
+});
+</script>
+
+</body>
+</html>

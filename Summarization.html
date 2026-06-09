@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NeuroAssist AI - Summarizer</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="./Summarization.css"/>
+</head>
+<body>
+
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB4mQaEskMJQiwNz-bVJnRYsd2z-EeaBsA",
+    authDomain: "ai-summarize-system.firebaseapp.com",
+    projectId: "ai-summarize-system",
+    storageBucket: "ai-summarize-system.firebasestorage.app",
+    messagingSenderId: "588246353472",
+    appId: "1:588246353472:web:1535ae40f7ace9b184c1a5"
+  };
+
+  const app     = initializeApp(firebaseConfig);
+  const auth    = getAuth(app);
+  const storage = getStorage(app);
+
+  function setAvatar(el, photoURL, name) {
+    if (photoURL) {
+      el.innerHTML = `<img src="${photoURL}" style="width:100%;height:100%;object-fit:cover;" />`;
+    } else {
+      el.innerHTML = "";
+      el.textContent = (name || "U").split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
+    }
+  }
+
+  onAuthStateChanged(auth, (user) => {
+    if (!user) { window.location.href = "./Login.html"; return; }
+
+    const name  = user.displayName || "User";
+    const email = user.email;
+
+    document.getElementById("profileName").textContent     = name;
+    document.getElementById("profileUsername").textContent = "@" + email.split("@")[0];
+    document.getElementById("profileEmail").textContent    = "Email: " + email;
+    setAvatar(document.getElementById("profileAvatar"), user.photoURL, name);
+  });
+
+  document.getElementById("avatarUpload").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      document.getElementById("editAvatar").innerHTML =
+        `<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover;" />`;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById("saveProfileBtn").addEventListener("click", async () => {
+    const newName  = document.getElementById("editName").value.trim();
+    const errorEl  = document.getElementById("editError");
+    const saveBtn  = document.getElementById("saveProfileBtn");
+    const file     = document.getElementById("avatarUpload").files[0];
+
+    errorEl.style.display = "none";
+    if (!newName) { errorEl.textContent = "Name cannot be empty"; errorEl.style.display = "block"; return; }
+
+    saveBtn.disabled = true;
+    saveBtn.textContent = "Saving...";
+
+    try {
+      let photoURL = auth.currentUser.photoURL;
+
+      if (file) {
+        const storageRef = ref(storage, `avatars/${auth.currentUser.uid}`);
+        await uploadBytes(storageRef, file);
+        photoURL = await getDownloadURL(storageRef);
+      }
+
+      await updateProfile(auth.currentUser, { displayName: newName, photoURL });
+
+      document.getElementById("profileName").textContent = newName;
+      setAvatar(document.getElementById("profileAvatar"), photoURL, newName);
+
+      document.getElementById("profileEdit").style.display = "none";
+      document.getElementById("profileView").style.display = "block";
+      document.getElementById("avatarUpload").value = "";
+    } catch {
+      errorEl.textContent = "Failed to save. Try again.";
+      errorEl.style.display = "block";
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = "Save";
+    }
+  });
+
+  window.logout = async () => {
+    await signOut(auth);
+    window.location.href = "./Login.html";
+  };
+  </script>
+
+  <div class="container">
+    <div class="logo-section">
+      <a href="./Homepage.html" class="anchor">
+      <img src="./Images/Homepage/Logo.png" class="logo"/>
+      <h2 class="head">NeuroAssist AI</h2>
+      </a>
+  </div>
+
+   
+      
+      <div class="btns">
+        <button id="openProfile" class="btn login">Profile</button>
+        <button class="btn login" onclick="logout()">Logout</button>
+
+      </div>
+    </nav>
+  </div>
+
+    <section class="hero">
+      <p class="hero-badge">AI-Powered Smart Notes</p>
+      <h1 class="winterfell">AI <span class="summar">Summarizer</span></h1>
+      <p class="winterpara">
+        Instantly extract the key points from articles, reports, or documents. Our AI analyzes
+        content and highlights the most important information while preserving clarity and context.
+      </p>
+    </section>
+
+    <section class="summarizer-card">
+      <div class="card-glow"></div>
+
+      <div class="upload-shell">
+        <div class="upload-area">
+          <input type="file" id="fileUpload" accept=".txt,.pdf,.docx">
+          <label for="fileUpload" class="upload-btn">
+            <i class="fa-solid fa-upload"></i>
+            <span id="uploadLabel">Upload File</span>
+          </label>
+          <p class="upload-note" id="uploadNote">Supports .txt, .pdf, .docx</p>
+        </div>
+      </div>
+
+      <div class="flux">
+        <div class="summard">
+          <button class="summarize-btn active-tab" onclick="showSummarizer()">✦ Summarize</button>
+        </div>
+
+        <div class="summard">
+          <button class="summarize-btn" onclick="showChatbot()">Ask Questions</button>
+        </div>
+      </div>
+
+      <div class="panel-wrap">
+        <div class="tarea panel-show" id="summarizer">
+          <textarea id="summarizeTextarea" placeholder="Paste your text here or upload a file above..."></textarea>
+
+<select id="summaryMode" style="margin-top:10px;padding:10px;border-radius:8px;width:100%;">
+  <option value="short">Short Summary</option>
+  <option value="detailed">Detailed Summary</option>
+  <option value="bullets">Bullet Points</option>
+  <option value="exam">Exam Notes</option>
+</select>
+
+<button class="sumz" onclick="summarizeText()" style="margin-top:0.75rem;">
+  ✦ Summarize
+</button>
+           
+          <div id="summaryOutput" style="display:none;margin-top:1rem;padding:1rem;border-radius:12px;background:#0f172a;border:1px solid #334155;color:#cbd5e1;font-size:0.95rem;line-height:1.6;white-space:pre-wrap;"></div>
+        </div>
+
+        <div id="whole" class="chatbox panel-hidden">
+          <div class="chat-header">
+            <h2 class="bot">NeuroBot</h2>
+            <p class="bot-subtext">Ask simple questions about summaries, services, or support.</p>
+          </div>
+
+          <div class="body" id="chatBox"></div>
+
+          <div class="low">
+            <input type="text" id="userInput" placeholder="Type your question here..." />
+            <button class="btn send-btn" onclick="sendMessage()">Send</button>
+            <button class="btn send-btn" >✦ Summarize</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+    <div id="profileContainer" class="profile-hidden">
+
+  <div class="big">
+
+    <div id="profileView">
+      <div class="profile">
+        <div id="profileAvatar" class="pro" style="display:flex;align-items:center;justify-content:center;background:#6366f1;color:#fff;font-size:2rem;font-weight:700;border-radius:50%;width:80px;height:80px;overflow:hidden;"></div>
+        <h1 class="name" id="profileName"></h1>
+        <p class="username" id="profileUsername"></p>
+      </div>
+      <div class="info">
+        <p id="profileEmail"></p>
+      </div>
+      <button class="btn" id="editProfileBtn">Edit profile</button>
+    </div>
+
+    <div id="profileEdit" style="display:none;">
+      <p style="font-weight:600;margin-bottom:1rem;">Edit Profile</p>
+
+      <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:1rem;gap:0.5rem;">
+        <div id="editAvatar" style="width:80px;height:80px;border-radius:50%;background:#6366f1;display:flex;align-items:center;justify-content:center;color:#fff;font-size:2rem;font-weight:700;overflow:hidden;"></div>
+        <label for="avatarUpload" style="font-size:0.8rem;color:#818cf8;cursor:pointer;text-decoration:underline;">Change Photo</label>
+        <input type="file" id="avatarUpload" accept="image/*" style="display:none;" />
+      </div>
+
+      <div class="form-group" style="margin-bottom:1rem;">
+        <label style="font-size:0.85rem;display:block;margin-bottom:0.3rem;">Full Name</label>
+        <input type="text" id="editName" style="width:100%;padding:0.5rem 0.75rem;border-radius:8px;border:1px solid #334155;background:#0f172a;color:#fff;font-size:0.95rem;" />
+      </div>
+      <p id="editError" style="color:#f87171;font-size:0.8rem;display:none;margin-bottom:0.5rem;"></p>
+      <div style="display:flex;gap:0.5rem;">
+        <button class="btn" id="saveProfileBtn">Save</button>
+        <button class="btn" id="cancelEditBtn" style="background:transparent;border:1px solid #334155;">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  
+document.getElementById("openProfile").addEventListener("click", () => {
+  const p = document.getElementById("profileContainer");
+  p.classList.toggle("profile-show");
+  p.classList.toggle("profile-hidden");
+});
+
+document.getElementById("editProfileBtn").addEventListener("click", () => {
+  document.getElementById("profileView").style.display = "none";
+  document.getElementById("profileEdit").style.display = "block";
+  document.getElementById("editName").value = document.getElementById("profileName").textContent;
+  document.getElementById("editAvatar").innerHTML = document.getElementById("profileAvatar").innerHTML;
+  document.getElementById("editAvatar").textContent = document.getElementById("profileAvatar").textContent;
+});
+
+document.getElementById("cancelEditBtn").addEventListener("click", () => {
+  document.getElementById("profileEdit").style.display = "none";
+  document.getElementById("profileView").style.display = "block";
+});
+</script>
+
+  <script>
+    const summarizer = document.getElementById("summarizer");
+    const chatbot = document.getElementById("whole");
+    const chatBox = document.getElementById("chatBox");
+    const userInput = document.getElementById("userInput");
+    const tabButtons = document.querySelectorAll(".summarize-btn");
+
+    function setActiveButton(index) {
+      tabButtons.forEach((btn) => btn.classList.remove("active-tab"));
+      tabButtons[index].classList.add("active-tab");
+    }
+
+    function showChatbot() {
+      summarizer.classList.remove("panel-show");
+      summarizer.classList.add("panel-hidden");
+
+      chatbot.classList.remove("panel-hidden");
+      chatbot.classList.add("panel-show");
+
+      setActiveButton(1);
+    }
+
+    function showSummarizer() {
+      chatbot.classList.remove("panel-show");
+      chatbot.classList.add("panel-hidden");
+
+      summarizer.classList.remove("panel-hidden");
+      summarizer.classList.add("panel-show");
+
+      setActiveButton(0);
+    }
+
+    function addMessage(text, sender) {
+      const msg = document.createElement("div");
+      msg.classList.add("message", sender);
+      msg.textContent = text;
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+  
+
+    async function sendMessage() {
+
+  const question = userInput.value.trim();
+
+  if (!question) return;
+
+  if (!currentContentId) {
+
+    addMessage(
+      "Please upload a document first.",
+      "bot"
+    );
+
+    return;
+  }
+
+  addMessage(question, "user");
+
+  userInput.value = "";
+
+  try {
+
+    const response = await fetch(
+      "https://ai.xamcampus.com/api/v1/rag/stream",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "text/event-stream"
+        },
+        body: JSON.stringify({
+          query: question,
+          k: 5,
+          language: "English",
+          content_id: currentContentId
+        })
+      }
+    );
+
+    const reader =
+      response.body.getReader();
+
+    const decoder =
+      new TextDecoder();
+
+    let result = "";
+
+    while (true) {
+
+      const { done, value } =
+        await reader.read();
+
+      if (done) break;
+
+      result += decoder.decode(value);
+    }
+
+    addMessage(result, "bot");
+
+  } catch (err) {
+
+    console.error(err);
+
+    addMessage(
+      "Failed to get response.",
+      "bot"
+    );
+  }
+}
+
+  async function summarizeText() {
+  const output = document.getElementById("summaryOutput");
+  const mode = document.getElementById("summaryMode").value;
+
+  output.style.display = "block";
+
+  if (!currentContentId) {
+    output.innerHTML = "Please upload a document first.";
+    return;
+  }
+
+  output.innerHTML = "Generating summary...";
+
+  let query = "Summarize this document.";
+
+  if (mode === "short") {
+    query = "Summarize this document in 3 short sentences.";
+  } else if (mode === "detailed") {
+    query = "Give a detailed summary of this document.";
+  } else if (mode === "bullets") {
+    query = "Summarize this document into clear bullet points.";
+  } else if (mode === "exam") {
+    query = "Convert this document into exam revision notes.";
+  }
+
+  try {
+    const response = await fetch(
+      "https://ai.xamcampus.com/api/v1/rag",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          query: query,
+          k: 5,
+          language: "English",
+          content_id: currentContentId,
+          class_name: null,
+          subject: null
+        })
+      }
+    );
+
+    const data = await response.json();
+
+    output.innerHTML = data.answer || "No summary generated.";
+
+  } catch (error) {
+    console.error(error);
+    output.innerHTML = "Error generating summary.";
+  }
+}
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+       
+
+
+    let currentContentId = null;
+
+document.getElementById("fileUpload").addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const label = document.getElementById("uploadLabel");
+  const note = document.getElementById("uploadNote");
+  const textarea = document.getElementById("summarizeTextarea");
+
+  label.textContent = file.name;
+  note.textContent = "Uploading and reading file...";
+  textarea.value = "";
+
+  /* ==========================
+     XAMTECH DOCUMENT UPLOAD
+     ========================== */
+
+  try {
+    const formData = new FormData();
+
+    formData.append("files", file);
+    formData.append("title", file.name);
+    formData.append("description", "NeuroAssist AI Upload");
+
+    const uploadResponse = await fetch(
+      "https://ai.xamcampus.com/api/v1/content/upload",
+      {
+        method: "POST",
+        body: formData
+      }
+    );
+
+    console.log("Status:", uploadResponse.status);
+    console.log("OK:", uploadResponse.ok);
+
+    const uploadData = await uploadResponse.json();
+
+    console.log("XamTech Upload Response:", uploadData);
+    
+
+    currentContentId =
+  uploadData.content_id ||
+  uploadData.data?.content_id ||
+  uploadData.data?.[0]?.content_id ||
+  uploadData[0]?.content_id ||
+  uploadData.contents?.[0]?.content_id ||
+  null;
+
+    console.log("Content ID:", currentContentId);
+
+  } catch (uploadError) {
+    console.error("XamTech Upload Failed:", uploadError);
+  }
+
+  /* ==========================
+     FILE TEXT EXTRACTION
+     ========================== */
+
+  try {
+    const ext = file.name.split(".").pop().toLowerCase();
+
+    if (ext === "txt") {
+
+      textarea.value = await file.text();
+
+    } else if (ext === "pdf") {
+
+      const buffer = await file.arrayBuffer();
+
+      const pdf = await pdfjsLib.getDocument({
+        data: buffer
+      }).promise;
+
+      let text = "";
+
+      for (let i = 1; i <= pdf.numPages; i++) {
+
+        const page = await pdf.getPage(i);
+
+        const content = await page.getTextContent();
+
+        text +=
+          content.items
+            .map(item => item.str)
+            .join(" ") + "\n";
+      }
+
+      textarea.value = text.trim();
+
+    } else if (ext === "docx") {
+
+      const buffer = await file.arrayBuffer();
+
+      const result =
+        await mammoth.extractRawText({
+          arrayBuffer: buffer
+        });
+
+      textarea.value = result.value.trim();
+
+    } else {
+
+      note.textContent =
+        "Unsupported file type. Use .txt, .pdf, or .docx";
+
+      return;
+    }
+
+    note.textContent =
+      currentContentId
+        ? "File uploaded and indexed successfully."
+        : "File loaded. XamTech upload unavailable.";
+
+    showSummarizer();
+
+  } catch (err) {
+
+    console.error(err);
+
+    note.textContent =
+      "Failed to read file. Try another file.";
+  }
+});
+  </script>
+
+</body>
+</html>
