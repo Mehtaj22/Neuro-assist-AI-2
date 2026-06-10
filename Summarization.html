@@ -161,7 +161,7 @@
 
       <div class="panel-wrap">
         <div class="tarea panel-show" id="summarizer">
-          <textarea id="summarizeTextarea" placeholder="Paste your text here or upload a file above..."></textarea>
+          <textarea id="summarizeTextarea" readonly placeholder="Document uploaded. Click Summarize to generate summary."></textarea>
 
 <select id="summaryMode" style="margin-top:10px;padding:10px;border-radius:8px;width:100%;">
   <option value="short">Short Summary</option>
@@ -511,7 +511,7 @@ console.log("Content ID:", currentContentId);
 
     if (ext === "txt") {
 
-      textarea.value = await file.text();
+      textarea.value = "";
 
     } else if (ext === "pdf") {
 
@@ -535,7 +535,7 @@ console.log("Content ID:", currentContentId);
             .join(" ") + "\n";
       }
 
-      textarea.value = text.trim();
+      textarea.value = "";
 
     } else if (ext === "docx") {
 
@@ -546,7 +546,7 @@ console.log("Content ID:", currentContentId);
           arrayBuffer: buffer
         });
 
-      textarea.value = result.value.trim();
+      textarea.value = "";
 
     } else {
 
