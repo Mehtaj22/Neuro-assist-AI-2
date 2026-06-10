@@ -487,15 +487,16 @@ document.getElementById("fileUpload").addEventListener("change", async (e) => {
     console.log("XamTech Upload Response:", uploadData);
     
 
-    currentContentId =
+   currentContentId =
+  uploadData.items?.[0]?.id ||
   uploadData.content_id ||
+  uploadData.contentId ||
+  uploadData.id ||
   uploadData.data?.content_id ||
-  uploadData.data?.[0]?.content_id ||
-  uploadData[0]?.content_id ||
-  uploadData.contents?.[0]?.content_id ||
+  uploadData.data?.id ||
   null;
 
-    console.log("Content ID:", currentContentId);
+console.log("Content ID:", currentContentId);
 
   } catch (uploadError) {
     console.error("XamTech Upload Failed:", uploadError);
