@@ -170,12 +170,17 @@
   <option value="exam">Exam Notes</option>
 </select>
 
-<button class="sumz" onclick="summarizeText()" style="margin-top:0.75rem;">
-  ✦ Summarize
-</button>
-           
-          <div id="summaryOutput" style="display:none;margin-top:1rem;padding:1rem;border-radius:12px;background:#0f172a;border:1px solid #334155;color:#cbd5e1;font-size:0.95rem;line-height:1.6;white-space:pre-wrap;"></div>
-        </div>
+  <div style="display:flex; gap:10px; margin-top:0.75rem;">
+   <button class="sumz" onclick="summarizeText()">
+    ✦ Summarize
+   </button>
+
+   <button class="sumz" onclick="deleteDocument()">
+    🗑 Delete
+   </button>
+  </div>
+</div>           
+         
 
         <div id="whole" class="chatbox panel-hidden">
           <div class="chat-header">
@@ -188,7 +193,7 @@
           <div class="low">
             <input type="text" id="userInput" placeholder="Type your question here..." />
             <button class="btn send-btn" onclick="sendMessage()">Send</button>
-            <button class="btn send-btn" >✦ Summarize</button>
+           <button class="btn send-btn" onclick="summarizeText()">✦ Summarize</button>
           </div>
         </div>
       </div>
@@ -298,7 +303,37 @@ document.getElementById("cancelEditBtn").addEventListener("click", () => {
       chatBox.scrollTop = chatBox.scrollHeight;
     }
 
-  
+  function deleteDocument() {
+     if (!confirm("Delete the current uploaded document?")) {
+
+    return;
+
+  }
+  // Clear the uploaded document reference
+  currentContentId = null;
+
+  // Clear the textarea
+  document.getElementById("summarizeTextarea").value = "";
+
+  // Clear the chat
+  document.getElementById("chatBox").innerHTML = "";
+
+  // Clear the question input
+  document.getElementById("userInput").value = "";
+
+  // Reset the file input
+  document.getElementById("fileUpload").value = "";
+
+  // Reset upload label
+  document.getElementById("uploadLabel").textContent = "Upload File";
+
+  // Reset upload note
+  document.getElementById("uploadNote").textContent =
+    "Supports .txt, .pdf, .docx";
+
+  // Optional: return to Summarize tab
+  showSummarizer();
+}
 
 async function sendMessage() {
   const question = userInput.value.trim();
@@ -373,17 +408,15 @@ async function sendMessage() {
   }
 }
   async function summarizeText() {
-  const output = document.getElementById("summaryOutput");
+  const textarea = document.getElementById("summarizeTextarea");
   const mode = document.getElementById("summaryMode").value;
 
-  output.style.display = "block";
+ if (!currentContentId) {
+  textarea.value = "Please upload a document first.";
+  return;
+}
 
-  if (!currentContentId) {
-    output.innerHTML = "Please upload a document first.";
-    return;
-  }
-
-  output.innerHTML = "Generating summary...";
+textarea.value = "Generating summary...";
 
   let query = "Summarize this document.";
 
@@ -418,11 +451,11 @@ async function sendMessage() {
 
     const data = await response.json();
 
-    output.innerHTML = data.answer || "No summary generated.";
+    textarea.value = data.answer || "No summary generated.";
 
   } catch (error) {
     console.error(error);
-    output.innerHTML = "Error generating summary.";
+   textarea.value = "Error generating summary.";
   }
 }
   </script>
@@ -442,13 +475,18 @@ document.getElementById("fileUpload").addEventListener("change", async (e) => {
   const file = e.target.files[0];
   if (!file) return;
 
-  const label = document.getElementById("uploadLabel");
-  const note = document.getElementById("uploadNote");
-  const textarea = document.getElementById("summarizeTextarea");
+const label = document.getElementById("uploadLabel");
+const note = document.getElementById("uploadNote");
+const textarea = document.getElementById("summarizeTextarea");
 
-  label.textContent = file.name;
-  note.textContent = "Uploading and reading file...";
-  textarea.value = "";
+label.textContent = file.name;
+note.textContent = "Uploading and reading file...";
+
+// Reset previous document state
+currentContentId = null;
+textarea.value = "";
+document.getElementById("chatBox").innerHTML = "";
+document.getElementById("userInput").value = "";
 
   /* ==========================
      XAMTECH DOCUMENT UPLOAD
