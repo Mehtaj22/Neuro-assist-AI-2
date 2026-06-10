@@ -354,7 +354,22 @@ document.getElementById("cancelEditBtn").addEventListener("click", () => {
 
       if (done) break;
 
-      result += decoder.decode(value);
+      const chunk = decoder.decode(value);
+const lines = chunk.split("\n");
+
+for (const line of lines) {
+  if (line.startsWith("data:")) {
+    try {
+      const json = JSON.parse(line.replace("data:", "").trim());
+
+      if (json.token) {
+        result += json.token;
+      }
+    } catch (e) {
+      console.log("Skipping non-JSON line:", line);
+    }
+  }
+}
     }
 
     addMessage(result, "bot");
