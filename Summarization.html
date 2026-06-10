@@ -470,6 +470,18 @@ document.getElementById("fileUpload").addEventListener("change", async (e) => {
     console.log("Status:", uploadResponse.status);
     console.log("OK:", uploadResponse.ok);
 
+    if (!uploadResponse.ok) {
+
+  const errorText = await uploadResponse.text();
+
+  console.error("XamTech Upload Error:", errorText);
+
+  note.textContent = "XamTech upload failed. Check console.";
+
+  return;
+
+}
+
     const uploadData = await uploadResponse.json();
 
     console.log("XamTech Upload Response:", uploadData);
