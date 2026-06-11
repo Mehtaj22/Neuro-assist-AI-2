@@ -194,6 +194,10 @@
   <i class="fa-solid fa-download"></i> Download TEXT
 </button>
 
+<button class="sumz" onclick="downloadSummaryPDF()">
+    <i class="fa-solid fa-file-pdf"></i> Download PDF
+</button>
+
   </div>
 </div>           
          
@@ -256,6 +260,8 @@
   </div>
 
 </div>
+
+
 
 <script>
   
@@ -365,7 +371,14 @@ function copySummary() {
 
     navigator.clipboard.writeText(content.innerText);
 
-    alert("Summary copied!");
+    const btn = event.target.closest("button");
+
+btn.innerHTML = "✅ Copied!";
+
+setTimeout(() => {
+    btn.innerHTML =
+      '<i class="fa-solid fa-copy"></i> Copy Summary';
+}, 1500);
 }
 
 
@@ -382,10 +395,36 @@ function downloadSummaryTxt() {
 
   const a = document.createElement("a");
   a.href = url;
-  a.download = "NeuroAssist-Summary.txt";
+  const filename =
+  document.getElementById("uploadLabel").textContent
+    .replace(/\.[^/.]+$/, "");
+
+a.download = `${filename}-Summary.txt`;
   a.click();
 
   URL.revokeObjectURL(url);
+}
+
+async function downloadSummaryPDF() {
+    const content = document.querySelector(".summary-content");
+
+    if (!content) {
+        alert("Generate a summary first.");
+        return;
+    }
+
+    const { jsPDF } = window.jspdf;
+
+    const pdf = new jsPDF();
+
+    pdf.setFont("helvetica");
+    pdf.setFontSize(14);
+
+    pdf.text(content.innerText, 10, 15, {
+        maxWidth: 190
+    });
+
+    pdf.save("NeuroAssist-Summary.pdf");
 }
 async function sendMessage() {
   const question = userInput.value.trim();
@@ -458,7 +497,15 @@ User question: ${question}
       }
     }
 
-    addMessage(result.trim() || "No response received.", "bot");
+    result = result
+  .replace(/chunk\s*\d+/gi, "")
+  .replace(/chunks?\s*:/gi, "")
+  .replace(/source\s*:.*/gi, "")
+  .replace(/metadata\s*:.*/gi, "")
+  .replace(/\n{3,}/g, "\n\n")
+  .trim();
+
+addMessage(result || "No response received.", "bot");
 
   } catch (err) {
     console.error(err);
@@ -483,36 +530,80 @@ User question: ${question}
     </p>
   `;
 
-  let query = "Summarize this document.";
+  let query = "";
 
-  if (mode === "short") {
-    query = "Summarize this document in 3 short sentences.";
-  } else if (mode === "detailed") {
-    query = "Give a detailed summary of this document.";
-  } else if (mode === "bullets") {
-    query = "Summarize this document into clear bullet points.";
-  } else if (mode === "exam") {
-    query = "Convert this document into exam revision notes.";
-  }
-  else if (mode === "quiz") {
+if (mode === "short") {
   query = `
-Generate 10 quiz questions from this document.
-Include multiple-choice options A, B, C, D.
-Also include the correct answer after each question.
-Do not mention chunks, sources, or metadata.
+Summarize this document in 3 concise sentences.
+Focus only on the most important ideas.
+
+Do not mention chunks, sources, metadata, retrieval process, page numbers, or internal references.
+Only provide the final summary.
+`;
+}
+
+else if (mode === "detailed") {
+  query = `
+Provide a detailed summary of this document.
+Cover all major topics, explanations, and important points in a clear structured way.
+
+Do not mention chunks, sources, metadata, retrieval process, page numbers, or internal references.
+Only provide the final summary.
+`;
+}
+
+else if (mode === "bullets") {
+  query = `
+Summarize this document into clear bullet points.
+Use short headings if needed.
+Make the points easy to read and useful for quick revision.
+
+Do not mention chunks, sources, metadata, retrieval process, page numbers, or internal references.
+Only provide the bullet-point summary.
+`;
+}
+
+else if (mode === "exam") {
+  query = `
+Convert this document into exam revision notes.
+Include important definitions, key concepts, formulas, advantages, disadvantages, and likely exam points where relevant.
+
+Do not mention chunks, sources, metadata, retrieval process, page numbers, or internal references.
+Only provide clean exam notes.
+`;
+}
+
+else if (mode === "quiz") {
+  query = `
+Generate 10 multiple-choice questions from this document.
+
+For each question provide:
+
+Question:
+A.
+B.
+C.
+D.
+Correct Answer:
+
+Do not mention chunks, sources, metadata or retrieval information.
+Only output the quiz.
 `;
 }
 
 else if (mode === "flashcards") {
   query = `
-Create flashcards from this document.
-Format each flashcard like this:
+Generate revision flashcards from this document.
+
+Format exactly like this:
 
 Q: Question
 A: Answer
 
-Make the flashcards useful for exam revision.
-Do not mention chunks, sources, or metadata.
+Create 15-20 flashcards covering all key concepts.
+
+Do not mention chunks, sources, metadata or retrieval information.
+Only output the flashcards.
 `;
 }
 
@@ -537,6 +628,12 @@ Do not mention chunks, sources, or metadata.
 
     const data = await response.json();
     const answer = data.answer || "No summary generated.";
+    const cleanAnswer = answer
+  .replace(/chunk\s*\d+/gi, "")
+  .replace(/chunks?\s*:/gi, "")
+  .replace(/source\s*:.*/gi, "")
+  .replace(/metadata\s*:.*/gi, "")
+  .trim();
 
     summaryBox.style.opacity = "0";
     summaryBox.style.transform = "translateY(15px)";
@@ -548,7 +645,7 @@ Do not mention chunks, sources, or metadata.
   </div>
 
   <div class="summary-content">
-      ${answer
+     ${cleanAnswer
         .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
         .replace(/\n/g, "<br>")}
   </div>
@@ -570,6 +667,7 @@ setTimeout(() => {
 }
   </script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   
   <script>
 
