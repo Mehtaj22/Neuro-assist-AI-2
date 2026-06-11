@@ -380,7 +380,13 @@ async function sendMessage() {
         "Accept": "text/event-stream"
       },
       body: JSON.stringify({
-        query: question,
+        query: `
+Answer the user's question clearly and directly.
+Do not mention chunks, chunk numbers, sources, metadata, page references, or retrieval details.
+Only provide the final clean answer.
+
+User question: ${question}
+`,
         k: 5,
         language: "English",
         content_id: currentContentId
