@@ -161,7 +161,11 @@
 
       <div class="panel-wrap">
         <div class="tarea panel-show" id="summarizer">
-          <textarea id="summarizeTextarea" readonly placeholder="Document uploaded. Click Summarize to generate summary."></textarea>
+          <div id="summarizeTextarea" class="summary-box">
+  <p class="placeholder-text">
+    Upload a document and click <strong>Summarize</strong> to generate an AI-powered summary.
+  </p>
+</div>
 
 <select id="summaryMode" style="margin-top:10px;padding:10px;border-radius:8px;width:100%;">
   <option value="short">Short Summary</option>
@@ -178,6 +182,10 @@
    <button class="sumz" onclick="deleteDocument()">
     🗑 Delete
    </button>
+
+   <button class="copy-btn" onclick="copySummary()">
+    <i class="fa-solid fa-copy"></i> Copy Summary
+</button>
   </div>
 </div>           
          
@@ -193,7 +201,7 @@
           <div class="low">
             <input type="text" id="userInput" placeholder="Type your question here..." />
             <button class="btn send-btn" onclick="sendMessage()">Send</button>
-           <button class="btn send-btn" onclick="summarizeText()">✦ Summarize</button>
+          <button class="btn send-btn" onclick="showSummarizer(); summarizeText()">✦ Summarize</button>
           </div>
         </div>
       </div>
@@ -313,7 +321,11 @@ document.getElementById("cancelEditBtn").addEventListener("click", () => {
   currentContentId = null;
 
   // Clear the textarea
-  document.getElementById("summarizeTextarea").value = "";
+  document.getElementById("summarizeTextarea").innerHTML = `
+  <p class="placeholder-text">
+    Upload a document and click <strong>Summarize</strong> to generate an AI-powered summary.
+  </p>
+`;
 
   // Clear the chat
   document.getElementById("chatBox").innerHTML = "";
@@ -333,6 +345,19 @@ document.getElementById("cancelEditBtn").addEventListener("click", () => {
 
   // Optional: return to Summarize tab
   showSummarizer();
+}
+
+function copySummary() {
+    const content = document.querySelector(".summary-content");
+
+    if (!content) {
+        alert("Generate a summary first.");
+        return;
+    }
+
+    navigator.clipboard.writeText(content.innerText);
+
+    alert("Summary copied!");
 }
 
 async function sendMessage() {
@@ -408,15 +433,22 @@ async function sendMessage() {
   }
 }
   async function summarizeText() {
-  const textarea = document.getElementById("summarizeTextarea");
+  const summaryBox = document.getElementById("summarizeTextarea");
   const mode = document.getElementById("summaryMode").value;
 
- if (!currentContentId) {
-  textarea.value = "Please upload a document first.";
-  return;
-}
+  if (!currentContentId) {
+    summaryBox.innerHTML = `
+      <p class="placeholder-text">Please upload a document first.</p>
+    `;
+    return;
+  }
 
-textarea.value = "Generating summary...";
+  summaryBox.innerHTML = `
+    <p class="placeholder-text">
+      <i class="fa-solid fa-spinner fa-spin"></i>
+      Generating summary...
+    </p>
+  `;
 
   let query = "Summarize this document.";
 
@@ -450,23 +482,42 @@ textarea.value = "Generating summary...";
     );
 
     const data = await response.json();
+    const answer = data.answer || "No summary generated.";
 
-    textarea.value = data.answer || "No summary generated.";
+    summaryBox.style.opacity = "0";
+    summaryBox.style.transform = "translateY(15px)";
+
+    summaryBox.innerHTML = `
+  <div class="summary-header">
+      <i class="fa-solid fa-file-lines"></i>
+      <span>AI Generated Summary</span>
+  </div>
+
+  <div class="summary-content">
+      ${answer
+        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+        .replace(/\n/g, "<br>")}
+  </div>
+`;
+
+setTimeout(() => {
+    summaryBox.style.opacity = "1";
+    summaryBox.style.transform = "translateY(0)";
+}, 50);
+
 
   } catch (error) {
     console.error(error);
-   textarea.value = "Error generating summary.";
+
+    summaryBox.innerHTML = `
+      <p class="placeholder-text">Error generating summary.</p>
+    `;
   }
 }
   </script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
-
+  
   <script>
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-       
 
 
     let currentContentId = null;
@@ -477,14 +528,18 @@ document.getElementById("fileUpload").addEventListener("change", async (e) => {
 
 const label = document.getElementById("uploadLabel");
 const note = document.getElementById("uploadNote");
-const textarea = document.getElementById("summarizeTextarea");
+const summaryBox = document.getElementById("summarizeTextarea");
 
 label.textContent = file.name;
 note.textContent = "Uploading and reading file...";
 
 // Reset previous document state
 currentContentId = null;
-textarea.value = "";
+summaryBox.innerHTML = `
+  <p class="placeholder-text">
+    Document uploaded successfully. Click <strong>Summarize</strong> to generate an AI-powered summary.
+  </p>
+`;
 document.getElementById("chatBox").innerHTML = "";
 document.getElementById("userInput").value = "";
 
@@ -549,52 +604,22 @@ console.log("Content ID:", currentContentId);
   try {
     const ext = file.name.split(".").pop().toLowerCase();
 
-    if (ext === "txt") {
+if (ext === "txt" || ext === "pdf" || ext === "docx") {
 
-      textarea.value = "";
+    summaryBox.innerHTML = `
+        <p class="placeholder-text">
+            ✅ Document uploaded successfully.<br>
+            Click <strong>Summarize</strong> to generate an AI-powered summary.
+        </p>
+    `;
 
-    } else if (ext === "pdf") {
+} else {
 
-      const buffer = await file.arrayBuffer();
-
-      const pdf = await pdfjsLib.getDocument({
-        data: buffer
-      }).promise;
-
-      let text = "";
-
-      for (let i = 1; i <= pdf.numPages; i++) {
-
-        const page = await pdf.getPage(i);
-
-        const content = await page.getTextContent();
-
-        text +=
-          content.items
-            .map(item => item.str)
-            .join(" ") + "\n";
-      }
-
-      textarea.value = "";
-
-    } else if (ext === "docx") {
-
-      const buffer = await file.arrayBuffer();
-
-      const result =
-        await mammoth.extractRawText({
-          arrayBuffer: buffer
-        });
-
-      textarea.value = "";
-
-    } else {
-
-      note.textContent =
+    note.textContent =
         "Unsupported file type. Use .txt, .pdf, or .docx";
 
-      return;
-    }
+    return;
+}
 
     note.textContent =
       currentContentId
