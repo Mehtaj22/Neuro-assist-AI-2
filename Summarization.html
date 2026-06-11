@@ -172,6 +172,8 @@
   <option value="detailed">Detailed Summary</option>
   <option value="bullets">Bullet Points</option>
   <option value="exam">Exam Notes</option>
+  <option value="quiz">Quiz Questions</option>
+  <option value="flashcards">Flashcards</option>
 </select>
 
   <div style="display:flex; gap:10px; margin-top:0.75rem;">
@@ -186,6 +188,11 @@
    <button class="sumz" onclick="copySummary()">
     <i class="fa-solid fa-copy"></i> Copy Summary
 </button>
+
+<button class="sumz" onclick="downloadSummaryTxt()">
+  <i class="fa-solid fa-download"></i> Download TEXT
+</button>
+
   </div>
 </div>           
          
@@ -360,6 +367,25 @@ function copySummary() {
     alert("Summary copied!");
 }
 
+
+function downloadSummaryTxt() {
+  const content = document.querySelector(".summary-content");
+
+  if (!content) {
+    alert("Generate a summary first.");
+    return;
+  }
+
+  const blob = new Blob([content.innerText], { type: "text/plain" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "NeuroAssist-Summary.txt";
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
 async function sendMessage() {
   const question = userInput.value.trim();
   if (!question) return;
@@ -467,6 +493,27 @@ User question: ${question}
   } else if (mode === "exam") {
     query = "Convert this document into exam revision notes.";
   }
+  else if (mode === "quiz") {
+  query = `
+Generate 10 quiz questions from this document.
+Include multiple-choice options A, B, C, D.
+Also include the correct answer after each question.
+Do not mention chunks, sources, or metadata.
+`;
+}
+
+else if (mode === "flashcards") {
+  query = `
+Create flashcards from this document.
+Format each flashcard like this:
+
+Q: Question
+A: Answer
+
+Make the flashcards useful for exam revision.
+Do not mention chunks, sources, or metadata.
+`;
+}
 
   try {
     const response = await fetch(
