@@ -582,16 +582,20 @@ document.getElementById("userInput").value = "";
     console.log("XamTech Upload Response:", uploadData);
     
 
-   currentContentId =
+ currentContentId =
   uploadData.items?.[0]?.id ||
+  uploadData.items?.[0]?.content_id ||
+  uploadData.items?.[0]?.contentId ||
   uploadData.content_id ||
   uploadData.contentId ||
   uploadData.id ||
   uploadData.data?.content_id ||
+  uploadData.data?.contentId ||
   uploadData.data?.id ||
   null;
 
-console.log("Content ID:", currentContentId);
+
+console.log("Final Content ID:", currentContentId);
 
   } catch (uploadError) {
     console.error("XamTech Upload Failed:", uploadError);
