@@ -755,6 +755,19 @@ textarea:focus {
     margin: 14px auto 0;
 }
 
+#stats {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: var(--text-primary);
+    font-size: 18px;
+}
+
+#stats p {
+    margin: 0;
+}
+
 /* RESPONSIVE */
 
 @media (max-width: 980px) {
