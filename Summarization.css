@@ -768,6 +768,80 @@ textarea:focus {
     margin: 0;
 }
 
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    overflow-y: auto;
+}
+
+.summarizer-section,
+.summary-section,
+.main-container,
+.container {
+    width: 100%;
+    max-width: 100%;
+    min-height: 100vh;
+    overflow: visible;
+}
+
+.summary-card,
+.summarizer-card,
+.tool-card {
+    width: 100%;
+    max-width: 100%;
+    overflow: visible;
+}
+
+@media (max-width: 768px) {
+
+    .summarizer-section,
+    .summary-section,
+    .main-container,
+    .container {
+        padding: 20px 16px;
+    }
+
+    .summary-card,
+    .summarizer-card,
+    .tool-card {
+        padding: 24px 18px;
+        border-radius: 28px;
+    }
+
+    textarea,
+    #summarizeTextarea,
+    #summaryOutput {
+        width: 100%;
+        min-height: 260px;
+    }
+
+    select,
+    button,
+    .btn,
+    .action-btn {
+        width: 100%;
+    }
+
+    .button-row,
+    .action-buttons,
+    .summary-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .button-row button,
+    .action-buttons button,
+    .summary-buttons button {
+        width: 100%;
+    }
+}
+
 /* RESPONSIVE */
 
 @media (max-width: 980px) {
