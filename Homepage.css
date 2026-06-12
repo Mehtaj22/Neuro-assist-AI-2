@@ -198,7 +198,8 @@ body {
         radial-gradient(circle at 80% 70%, rgba(56, 189, 248, 0.12), transparent 30%),
         linear-gradient(rgba(2, 6, 23, 0.7), rgba(2, 6, 23, 0.92)),
         url("./Images/Homepage/unnamed.png");
-    background-size: 70%;
+    background-size: cover;
+    background-repeat: no-repeat;
     background-position: center;
     border-bottom: 1px solid var(--surface-border);
 }
@@ -759,5 +760,15 @@ body {
     #profileContainer {
         width: calc(100% - 30px);
         right: 15px;
+    }
+
+}
+
+@media (max-width: 640px) {
+    .hero {
+        min-height: 100vh;
+        padding: 90px 20px 80px;
+        background-size: cover;
+        background-position: center center;
     }
 }
