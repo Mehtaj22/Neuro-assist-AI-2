@@ -138,6 +138,9 @@
     </section>
 
     <section class="summarizer-card">
+      <div class="progress-container">
+        <div id="progressBar"></div>
+      </div>
       <div class="card-glow"></div>
 
       <div class="upload-shell">
@@ -782,6 +785,7 @@ document.getElementById("fileUpload").addEventListener("change", async (e) => {
   const label = document.getElementById("uploadLabel");
   const note = document.getElementById("uploadNote");
   const summaryBox = document.getElementById("summarizeTextarea");
+  const progress = document.getElementById("progressBar");
   const ext = file.name.split(".").pop().toLowerCase();
 
   originalWordCount = 0;
@@ -789,18 +793,21 @@ document.getElementById("fileUpload").addEventListener("change", async (e) => {
   document.getElementById("charCount").textContent = "0";
   document.getElementById("reduction").textContent = "0%";
 
-label.textContent = file.name;
-note.textContent = "Uploading and reading file...";
+  // Set progress to 10% after resetting stats and before upload starts
+  progress.style.width = "10%";
 
-// Reset previous document state
-currentContentId = null;
-summaryBox.innerHTML = `
-  <p class="placeholder-text">
-    Document uploaded successfully. Click <strong>Summarize</strong> to generate an AI-powered summary.
-  </p>
-`;
-document.getElementById("chatBox").innerHTML = "";
-document.getElementById("userInput").value = "";
+  label.textContent = file.name;
+  note.textContent = "Uploading and reading file...";
+
+  // Reset previous document state
+  currentContentId = null;
+  summaryBox.innerHTML = `
+    <p class="placeholder-text">
+      Document uploaded successfully. Click <strong>Summarize</strong> to generate an AI-powered summary.
+    </p>
+  `;
+  document.getElementById("chatBox").innerHTML = "";
+  document.getElementById("userInput").value = "";
 
   /* ==========================
      XAMTECH DOCUMENT UPLOAD
@@ -812,6 +819,9 @@ document.getElementById("userInput").value = "";
     formData.append("files", file);
     formData.append("title", file.name);
     formData.append("description", "NeuroAssist AI Upload");
+
+    // Set progress to 35% immediately before starting upload fetch
+    progress.style.width = "35%";
 
     const uploadResponse = await fetch(
       "https://ai.xamcampus.com/api/v1/content/upload",
@@ -825,39 +835,38 @@ document.getElementById("userInput").value = "";
     console.log("OK:", uploadResponse.ok);
 
     if (!uploadResponse.ok) {
-
-  const errorText = await uploadResponse.text();
-
-  console.error("XamTech Upload Error:", errorText);
-
-  note.textContent = "XamTech upload failed. Check console.";
-
-  return;
-
-}
+      const errorText = await uploadResponse.text();
+      console.error("XamTech Upload Error:", errorText);
+      note.textContent = "XamTech upload failed. Check console.";
+      // Reset progress bar if upload fails
+      progress.style.width = "0%";
+      return;
+    }
 
     const uploadData = await uploadResponse.json();
 
     console.log("XamTech Upload Response:", uploadData);
-    
 
- currentContentId =
-  uploadData.items?.[0]?.id ||
-  uploadData.items?.[0]?.content_id ||
-  uploadData.items?.[0]?.contentId ||
-  uploadData.content_id ||
-  uploadData.contentId ||
-  uploadData.id ||
-  uploadData.data?.content_id ||
-  uploadData.data?.contentId ||
-  uploadData.data?.id ||
-  null;
+    currentContentId =
+      uploadData.items?.[0]?.id ||
+      uploadData.items?.[0]?.content_id ||
+      uploadData.items?.[0]?.contentId ||
+      uploadData.content_id ||
+      uploadData.contentId ||
+      uploadData.id ||
+      uploadData.data?.content_id ||
+      uploadData.data?.contentId ||
+      uploadData.data?.id ||
+      null;
 
+    // Set progress to 75% after currentContentId assignment
+    progress.style.width = "75%";
 
-console.log("Final Content ID:", currentContentId);
-
+    console.log("Final Content ID:", currentContentId);
   } catch (uploadError) {
     console.error("XamTech Upload Failed:", uploadError);
+    // Reset progress bar if upload fails
+    progress.style.width = "0%";
   }
 
   /* ==========================
@@ -868,7 +877,6 @@ console.log("Final Content ID:", currentContentId);
     if (ext === "txt") {
       const text = await file.text();
       originalWordCount = text.split(/\s+/).filter(Boolean).length;
-
     } else if (ext === "pdf") {
       if (!window.pdfjsLib) {
         throw new Error("PDF.js library not loaded.");
@@ -888,7 +896,6 @@ console.log("Final Content ID:", currentContentId);
       }
 
       originalWordCount = extractedText.split(/\s+/).filter(Boolean).length;
-
     } else if (ext === "docx") {
       if (!window.mammoth) {
         throw new Error("Mammoth library not loaded.");
@@ -898,9 +905,10 @@ console.log("Final Content ID:", currentContentId);
       const result = await mammoth.extractRawText({ arrayBuffer: buffer });
 
       originalWordCount = result.value.split(/\s+/).filter(Boolean).length;
-
     } else {
       note.textContent = "Unsupported file type. Use .txt, .pdf, or .docx";
+      // Reset progress bar for unsupported file
+      progress.style.width = "0%";
       return;
     }
 
@@ -916,11 +924,18 @@ console.log("Final Content ID:", currentContentId);
         ? `File uploaded and indexed successfully. Words detected: ${originalWordCount}`
         : `File loaded. XamTech upload unavailable. Words detected: ${originalWordCount}`;
 
-    showSummarizer();
+    // Set progress to 100% after successful extraction, before showing summarizer
+    progress.style.width = "100%";
+    setTimeout(() => {
+      progress.style.width = "0%";
+    }, 800);
 
+    showSummarizer();
   } catch (err) {
     console.error(err);
     note.textContent = "Failed to read file. Try another file.";
+    // Reset progress bar on error
+    progress.style.width = "0%";
   }
 });
   </script>
