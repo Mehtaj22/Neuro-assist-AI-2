@@ -285,6 +285,14 @@ document.getElementById("cancelEditBtn").addEventListener("click", () => {
 });
 </script>
 
+<script>
+
+  let currentContentId = null;
+
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <script>
     const summarizer = document.getElementById("summarizer");
     const chatbot = document.getElementById("whole");
@@ -405,33 +413,44 @@ a.download = `${filename}-Summary.txt`;
   URL.revokeObjectURL(url);
 }
 
+
 async function downloadSummaryPDF() {
-    const content = document.querySelector(".summary-content");
+  const content = document.querySelector(".summary-content");
 
-    if (!content) {
-        alert("Generate a summary first.");
-        return;
-    }
+  if (!content) {
+    alert("Generate a summary first.");
+    return;
+  }
 
-    const { jsPDF } = window.jspdf;
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF();
 
-    const pdf = new jsPDF();
+  const filename =
+    document.getElementById("uploadLabel").textContent
+      .replace(/\.[^/.]+$/, "") || "NeuroAssist";
 
-    pdf.setFont("helvetica");
-    pdf.setFontSize(14);
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(18);
+  pdf.text("NeuroAssist AI Summary", 10, 15);
+
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(12);
 
   const lines = pdf.splitTextToSize(content.innerText, 180);
 
-pdf.setFontSize(20);
-pdf.text("NeuroAssist AI Summary", 10, 15);
+  let y = 30;
 
-pdf.setFontSize(12);
+  lines.forEach((line) => {
+    if (y > 280) {
+      pdf.addPage();
+      y = 20;
+    }
 
-pdf.text(lines, 10, 30);
+    pdf.text(line, 10, y);
+    y += 8;
+  });
 
-pdf.save(`${filename}-Summary.pdf`);
-
-    pdf.save("NeuroAssist-Summary.pdf");
+  pdf.save(`${filename}-Summary.pdf`);
 }
 async function sendMessage() {
   const question = userInput.value.trim();
@@ -669,12 +688,12 @@ Only output the flashcards.
 
   </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   
   <script>
 
 
-    let currentContentId = null;
+   
 
 document.getElementById("fileUpload").addEventListener("change", async (e) => {
   const file = e.target.files[0];
@@ -795,6 +814,8 @@ if (ext === "txt" || ext === "pdf" || ext === "docx") {
   }
 });
   </script>
+
+  
 
 </body>
 </html>
