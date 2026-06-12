@@ -272,7 +272,7 @@ mark {
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
     box-shadow: var(--shadow-lg);
-    overflow: hidden;
+    overflow: visible;
 }
 
 .card-glow {
@@ -781,8 +781,7 @@ body {
 
 .summarizer-section,
 .summary-section,
-.main-container,
-.container {
+.main-container {
     width: 100%;
     max-width: 100%;
     min-height: 100vh;
@@ -798,11 +797,19 @@ body {
 }
 
 @media (max-width: 768px) {
+    body {
+        overflow-y: auto;
+    }
+
+    .container {
+        position: relative;
+        min-height: auto;
+        padding: 16px;
+    }
 
     .summarizer-section,
     .summary-section,
-    .main-container,
-    .container {
+    .main-container {
         padding: 20px 16px;
     }
 
@@ -813,32 +820,55 @@ body {
         border-radius: 28px;
     }
 
+    .tarea textarea,
     textarea,
     #summarizeTextarea,
     #summaryOutput {
         width: 100%;
-        min-height: 260px;
+        min-height: 280px;
+        height: 280px;
     }
 
     select,
+    #summaryMode,
+    #languageSelect {
+        width: 100%;
+        height: 56px;
+        font-size: 16px;
+        margin-bottom: 16px;
+    }
+
     button,
     .btn,
-    .action-btn {
+    .action-btn,
+    .sumz {
         width: 100%;
     }
 
     .button-row,
     .action-buttons,
     .summary-buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        width: 100%;
     }
 
     .button-row button,
     .action-buttons button,
-    .summary-buttons button {
+    .summary-buttons button,
+    .sumz,
+    .btn {
         width: 100%;
+        min-height: 64px;
+        font-size: 18px;
+        padding: 14px 12px;
+    }
+
+    #stats {
+        font-size: 18px;
+        margin-top: 24px;
+        padding-bottom: 40px;
     }
 }
 
@@ -886,7 +916,8 @@ body {
     }
 
     textarea {
-        min-height: 620px;
+        min-height: 280px;
+        height: 280px;
         border-radius: 18px;
     }
 
@@ -896,8 +927,8 @@ body {
     }
 
     #whole {
-        min-height: 620px;
-        height: 620px;
+        min-height: 520px;
+        height: 520px;
         padding: 18px;
         border-radius: 18px;
     }
@@ -951,12 +982,13 @@ body {
     }
 
     textarea {
-        min-height: 540px;
+        min-height: 260px;
+        height: 260px;
     }
 
     #whole {
-        min-height: 560px;
-        height: 560px;
+        min-height: 500px;
+        height: 500px;
     }
 
     .bot {
