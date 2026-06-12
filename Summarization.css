@@ -5,6 +5,9 @@
     --bg-primary: #020617;
     --bg-secondary: #0b1220;
     --bg-tertiary: #111827;
+    --border: rgba(255, 255, 255, 0.12);
+    --border-strong: rgba(255, 255, 255, 0.16);
+    --shadow-lg: 0 18px 45px rgba(0, 0, 0, 0.35);
     --surface: rgba(255, 255, 255, 0.06);
     --surface-strong: rgba(255, 255, 255, 0.08);
     --surface-border: rgba(255, 255, 255, 0.12);
@@ -736,6 +739,20 @@ textarea:focus {
     display: flex;
     align-items: center;
     gap: 10px;
+}
+
+#profileView {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#editProfileBtn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 14px auto 0;
 }
 
 /* RESPONSIVE */
