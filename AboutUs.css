@@ -550,6 +550,72 @@ body {
     transform: scale(0.95);
 }
 
+.footer-container {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    text-align: left;
+
+}
+
+.footer-col {
+
+    width: 100%;
+
+    display: flex;
+
+    justify-content: flex-start;
+
+}
+
+.footer-brand,
+
+.footer-group {
+
+    align-items: flex-start;
+
+    text-align: left;
+
+}
+
+.footer-brand-top {
+
+    justify-content: flex-start;
+
+}
+
+.footer-text,
+
+.footer-group h2,
+
+.link,
+
+.connect,
+
+.address-text {
+
+    text-align: left;
+
+    justify-content: flex-start;
+
+}
+
+.footer-container .footer-col:nth-child(2),
+
+.footer-container .footer-col:nth-child(2) .footer-group {
+
+    justify-content: flex-start;
+
+    align-items: flex-start;
+
+    text-align: left;
+
+}
+
 .panel-show {
     position: relative;
     opacity: 1;
