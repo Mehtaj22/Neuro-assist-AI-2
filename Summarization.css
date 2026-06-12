@@ -1008,3 +1008,58 @@ body {
         height: 54px;
     }
 }
+
+/* FIX MOBILE SUMMARY ACTION BUTTONS */
+@media (max-width: 768px) {
+    .summarizer-card {
+        width: calc(100% - 20px);
+        max-width: calc(100% - 20px);
+        overflow: hidden;
+    }
+
+    .tarea {
+        overflow: hidden;
+    }
+
+    .tarea>div:has(button),
+    .tarea>div:has(.sumz),
+    .summary-buttons,
+    .action-buttons,
+    .button-row {
+        width: 100%;
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        overflow: hidden;
+    }
+
+    .tarea>div:has(button) button,
+    .tarea>div:has(.sumz) .sumz,
+    .summary-buttons button,
+    .action-buttons button,
+    .button-row button,
+    .sumz {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        min-height: 70px;
+        height: auto;
+        padding: 14px 10px;
+        font-size: 18px;
+        line-height: 1.2;
+        white-space: normal;
+        word-break: normal;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .tarea>div:has(button),
+    .tarea>div:has(.sumz),
+    .summary-buttons,
+    .action-buttons,
+    .button-row {
+        grid-template-columns: 1fr;
+    }
+}
