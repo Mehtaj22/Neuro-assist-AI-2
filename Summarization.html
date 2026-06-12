@@ -56,6 +56,7 @@
   document.getElementById("avatarUpload").addEventListener("change", (e) => {
     const file = e.target.files[0];
     if (!file) return;
+   
     const reader = new FileReader();
     reader.onload = (ev) => {
       document.getElementById("editAvatar").innerHTML =
@@ -206,6 +207,13 @@
 </button>
 
   </div>
+
+  <div id="stats">
+    <p>Words: <span id="wordCount">0</span></p>
+    <p>Characters: <span id="charCount">0</span></p>
+    <p>Summary Reduction: <span id="reduction">0%</span></p>
+</div>
+
 </div>           
          
 
@@ -295,9 +303,12 @@ document.getElementById("cancelEditBtn").addEventListener("click", () => {
 <script>
 
   let currentContentId = null;
+  let originalWordCount = 0;
 
 </script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <script>
@@ -346,6 +357,12 @@ document.getElementById("cancelEditBtn").addEventListener("click", () => {
     return;
 
   }
+
+  originalWordCount = 0;
+
+document.getElementById("wordCount").textContent = "0";
+document.getElementById("charCount").textContent = "0";
+document.getElementById("reduction").textContent = "0%";
   // Clear the uploaded document reference
   currentContentId = null;
 
@@ -673,6 +690,19 @@ Only output the flashcards.
       .replace(/metadata\s*:.*/gi, "")
       .trim();
 
+      const summaryWords = cleanAnswer.split(/\s+/).filter(Boolean).length;
+
+document.getElementById("wordCount").textContent = summaryWords;
+document.getElementById("charCount").textContent = cleanAnswer.length;
+
+// Placeholder until original document word count is available
+if (originalWordCount > 0) {
+    document.getElementById("reduction").textContent =
+        Math.round((1 - summaryWords / originalWordCount) * 100) + "%";
+} else {
+    document.getElementById("reduction").textContent = "N/A";
+}
+
       const keywords = [
   "AI",
   "Machine Learning",
@@ -749,9 +779,15 @@ document.getElementById("fileUpload").addEventListener("change", async (e) => {
   const file = e.target.files[0];
   if (!file) return;
 
-const label = document.getElementById("uploadLabel");
-const note = document.getElementById("uploadNote");
-const summaryBox = document.getElementById("summarizeTextarea");
+  const label = document.getElementById("uploadLabel");
+  const note = document.getElementById("uploadNote");
+  const summaryBox = document.getElementById("summarizeTextarea");
+  const ext = file.name.split(".").pop().toLowerCase();
+
+  originalWordCount = 0;
+  document.getElementById("wordCount").textContent = "0";
+  document.getElementById("charCount").textContent = "0";
+  document.getElementById("reduction").textContent = "0%";
 
 label.textContent = file.name;
 note.textContent = "Uploading and reading file...";
@@ -825,42 +861,66 @@ console.log("Final Content ID:", currentContentId);
   }
 
   /* ==========================
-     FILE TEXT EXTRACTION
+     FILE TEXT EXTRACTION + WORD COUNT
      ========================== */
 
   try {
-    const ext = file.name.split(".").pop().toLowerCase();
+    if (ext === "txt") {
+      const text = await file.text();
+      originalWordCount = text.split(/\s+/).filter(Boolean).length;
 
-if (ext === "txt" || ext === "pdf" || ext === "docx") {
+    } else if (ext === "pdf") {
+      if (!window.pdfjsLib) {
+        throw new Error("PDF.js library not loaded.");
+      }
+
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+      const buffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+      let extractedText = "";
+
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        extractedText += content.items.map(item => item.str).join(" ") + "\n";
+      }
+
+      originalWordCount = extractedText.split(/\s+/).filter(Boolean).length;
+
+    } else if (ext === "docx") {
+      if (!window.mammoth) {
+        throw new Error("Mammoth library not loaded.");
+      }
+
+      const buffer = await file.arrayBuffer();
+      const result = await mammoth.extractRawText({ arrayBuffer: buffer });
+
+      originalWordCount = result.value.split(/\s+/).filter(Boolean).length;
+
+    } else {
+      note.textContent = "Unsupported file type. Use .txt, .pdf, or .docx";
+      return;
+    }
 
     summaryBox.innerHTML = `
-        <p class="placeholder-text">
-            ✅ Document uploaded successfully.<br>
-            Click <strong>Summarize</strong> to generate an AI-powered summary.
-        </p>
+      <p class="placeholder-text">
+        ✅ Document uploaded successfully.<br>
+        Click <strong>Summarize</strong> to generate an AI-powered summary.
+      </p>
     `;
-
-} else {
-
-    note.textContent =
-        "Unsupported file type. Use .txt, .pdf, or .docx";
-
-    return;
-}
 
     note.textContent =
       currentContentId
-        ? "File uploaded and indexed successfully."
-        : "File loaded. XamTech upload unavailable.";
+        ? `File uploaded and indexed successfully. Words detected: ${originalWordCount}`
+        : `File loaded. XamTech upload unavailable. Words detected: ${originalWordCount}`;
 
     showSummarizer();
 
   } catch (err) {
-
     console.error(err);
-
-    note.textContent =
-      "Failed to read file. Try another file.";
+    note.textContent = "Failed to read file. Try another file.";
   }
 });
   </script>
