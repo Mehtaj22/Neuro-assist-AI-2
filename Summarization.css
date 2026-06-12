@@ -154,6 +154,13 @@ body {
     margin-left: auto;
 }
 
+mark {
+    background: #ffd54f;
+    color: #111;
+    padding: 2px 5px;
+    border-radius: 4px;
+}
+
 .btn {
     display: flex;
     align-items: center;

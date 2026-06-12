@@ -176,6 +176,13 @@
   <option value="quiz">Quiz Questions</option>
   <option value="flashcards">Flashcards</option>
 </select>
+<select id="languageSelect" style="margin-top:10px;padding:10px;border-radius:8px;width:100%;">
+    <option value="English">🇬🇧 English</option>
+    <option value="Hindi">🇮🇳 Hindi</option>
+    <option value="French">🇫🇷 French</option>
+    <option value="Spanish">🇪🇸 Spanish</option>
+    <option value="German">🇩🇪 German</option>
+</select>
 
   <div style="display:flex; gap:10px; margin-top:0.75rem;">
   <button id="summarizeBtn" class="sumz" onclick="summarizeText()">
@@ -454,6 +461,7 @@ async function downloadSummaryPDF() {
 }
 async function sendMessage() {
   const question = userInput.value.trim();
+  const language = document.getElementById("languageSelect").value;
   if (!question) return;
 
   if (!currentContentId) {
@@ -472,15 +480,23 @@ async function sendMessage() {
         "Accept": "text/event-stream"
       },
       body: JSON.stringify({
-        query: `
-Answer the user's question clearly and directly.
-Do not mention chunks, chunk numbers, sources, metadata, page references, or retrieval details.
-Only provide the final clean answer.
+      query: `
+Answer the user's question in ${language}.
 
-User question: ${question}
+Do not mention:
+- chunks
+- sources
+- metadata
+- retrieval process
+- page numbers
+
+Only provide the final answer.
+
+User question:
+${question}
 `,
         k: 5,
-        language: "English",
+       language: language,
         content_id: currentContentId
       })
     });
@@ -542,6 +558,7 @@ async function summarizeText() {
   const btn = document.getElementById("summarizeBtn");
   const summaryBox = document.getElementById("summarizeTextarea");
   const mode = document.getElementById("summaryMode").value;
+  const language = document.getElementById("languageSelect").value;
 
   btn.disabled = true;
   btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
@@ -568,6 +585,7 @@ async function summarizeText() {
   if (mode === "short") {
     query = `
 Summarize this document in 3 concise sentences.
+Write the response in ${language}.
 Focus only on the most important ideas.
 Do not mention chunks, sources, metadata, retrieval process, page numbers, or internal references.
 Only provide the final summary.
@@ -575,6 +593,7 @@ Only provide the final summary.
   } else if (mode === "detailed") {
     query = `
 Provide a detailed summary of this document.
+Write the response in ${language}.
 Cover all major topics, explanations, and important points in a clear structured way.
 Do not mention chunks, sources, metadata, retrieval process, page numbers, or internal references.
 Only provide the final summary.
@@ -582,6 +601,7 @@ Only provide the final summary.
   } else if (mode === "bullets") {
     query = `
 Summarize this document into clear bullet points.
+Write the response in ${language}.
 Use short headings if needed.
 Make the points easy to read and useful for quick revision.
 Do not mention chunks, sources, metadata, retrieval process, page numbers, or internal references.
@@ -590,6 +610,7 @@ Only provide the bullet-point summary.
   } else if (mode === "exam") {
     query = `
 Convert this document into exam revision notes.
+Write the response in ${language}.
 Include important definitions, key concepts, formulas, advantages, disadvantages, and likely exam points where relevant.
 Do not mention chunks, sources, metadata, retrieval process, page numbers, or internal references.
 Only provide clean exam notes.
@@ -597,7 +618,7 @@ Only provide clean exam notes.
   } else if (mode === "quiz") {
     query = `
 Generate 10 multiple-choice questions from this document.
-
+Write the response in ${language}.
 For each question provide:
 
 Question:
@@ -613,7 +634,7 @@ Only output the quiz.
   } else if (mode === "flashcards") {
     query = `
 Generate revision flashcards from this document.
-
+Write the response in ${language}.
 Format exactly like this:
 
 Q: Question
@@ -635,7 +656,7 @@ Only output the flashcards.
       body: JSON.stringify({
         query: query,
         k: 5,
-        language: "English",
+        language: language,
         content_id: currentContentId,
         class_name: null,
         subject: null
@@ -652,6 +673,35 @@ Only output the flashcards.
       .replace(/metadata\s*:.*/gi, "")
       .trim();
 
+      const keywords = [
+  "AI",
+  "Machine Learning",
+  "Deep Learning",
+  "Neural Network",
+  "Algorithm",
+  "Database",
+  "Cloud",
+  "Security",
+  "Python",
+  "Java",
+  "HTML",
+  "CSS",
+  "JavaScript"
+];
+
+let highlighted = cleanAnswer;
+
+
+if (language === "English") {
+keywords.forEach(word => {
+  const regex = new RegExp(`\\b${word}\\b`, "gi");
+  highlighted = highlighted.replace(
+    regex,
+    `<mark>${word}</mark>`
+  );
+});
+}
+
     summaryBox.style.opacity = "0";
     summaryBox.style.transform = "translateY(15px)";
 
@@ -662,7 +712,7 @@ Only output the flashcards.
       </div>
 
       <div class="summary-content">
-        ${cleanAnswer
+       ${highlighted
           .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
           .replace(/\n/g, "<br>")}
       </div>
