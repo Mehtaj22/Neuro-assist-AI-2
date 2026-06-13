@@ -940,7 +940,12 @@ document.getElementById("fileUpload").addEventListener("change", async (e) => {
 });
   </script>
 
-  
+  <script>
+  window.addEventListener('load', () => {
+    window.scrollTo(0, 1);
+    setTimeout(() => window.scrollTo(0, 0), 50);
+  });
+</script>
 
 </body>
 </html>
