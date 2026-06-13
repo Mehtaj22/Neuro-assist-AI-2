@@ -789,10 +789,15 @@
     }
 
     .summary-card,
-    .summarizer-card,
     .tool-card {
         width: 100%;
         max-width: 100%;
+        overflow: visible;
+    }
+
+    .summarizer-card {
+        max-width: 1120px;
+        width: calc(100% - 32px);
         overflow: visible;
     }
 
