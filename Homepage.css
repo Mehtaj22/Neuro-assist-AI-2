@@ -691,57 +691,23 @@ body {
     gap: 10px;
 }
 
-@media (max-width: 980px) {
+/* MOBILE NAVBAR SAME AS ABOUT US */
+@media (max-width: 1080px) {
     .container {
-        flex-direction: column;
-        gap: 18px;
         padding: 18px 20px;
-        position: relative;
-    }
-
-    .logo-section {
-        width: 100%;
-        display: flex;
-        justify-content: center;
+        gap: 18px;
+        flex-wrap: wrap;
     }
 
     .nav {
         width: 100%;
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
         justify-content: center;
-        align-items: center;
+        flex-wrap: wrap;
         gap: 18px;
     }
 
-    .nav a {
-        font-size: 18px;
-    }
-
     .btns {
-        width: 100%;
         margin-left: 0;
-        display: flex;
-        justify-content: center;
-    }
-
-    .btns .btn {
-        width: 100%;
-        padding: 18px;
-        font-size: 18px;
-        border-radius: 18px;
-    }
-
-    .logo {
-        width: 70px;
-        height: 70px;
-    }
-
-    .head {
-        font-size: 28px;
-        text-align: center;
-        white-space: nowrap;
     }
 
     .about {
@@ -758,10 +724,30 @@ body {
     }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 480px) {
+    .logo {
+        width: 48px;
+        height: 48px;
+    }
 
     .head {
-        font-size: 28px;
+        font-size: 18px;
+    }
+
+    .nav a {
+        font-size: 14px;
+    }
+
+    .btns {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .btns .btn {
+        width: 100%;
+        padding: 12px 24px;
+        font-size: 15px;
+        border-radius: 12px;
     }
 
     .headt {
@@ -770,16 +756,6 @@ body {
 
     .para {
         font-size: 16px;
-    }
-
-    .btn,
-    .fbutton {
-        width: 100%;
-    }
-
-    .btns {
-        width: 100%;
-        flex-direction: column;
     }
 
     #profileContainer {
