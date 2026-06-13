@@ -810,6 +810,32 @@ textarea:focus {
     white-space: nowrap;
 }
 
+/* Fix: summary box should not inherit textarea min-height */
+#summarizeTextarea {
+    min-height: 120px !important;
+    height: auto !important;
+}
+
+/* Fix: hidden panel must not contribute to page height */
+.panel-hidden {
+    position: absolute !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+}
+
+/* Fix: card-glow must not overflow the card boundary */
+.card-glow {
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.summarizer-card {
+    overflow: hidden !important;
+}
+
 /* ─── MOBILE ─────────────────────────────────────────────── */
 
 @media (max-width: 768px) {
