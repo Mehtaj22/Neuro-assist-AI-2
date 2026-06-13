@@ -809,15 +809,22 @@
         overflow: visible;
     }
 
+
     /* DESKTOP TOP SECTION RESTORE */
     @media (min-width: 769px) {
+        body {
+            padding-top: 96px !important;
+            overflow-y: auto !important;
+        }
+
         .container {
-            position: sticky !important;
+            position: fixed !important;
             top: 0 !important;
             left: 0 !important;
             right: 0 !important;
             width: 100% !important;
             max-width: none !important;
+            height: 96px !important;
             display: flex !important;
             align-items: center !important;
             justify-content: space-between !important;
@@ -826,14 +833,17 @@
             transform: none !important;
             opacity: 1 !important;
             visibility: visible !important;
-            z-index: 3000 !important;
+            overflow: visible !important;
+            z-index: 9999 !important;
         }
 
         .container nav {
             width: 100% !important;
+            height: auto !important;
             display: flex !important;
             align-items: center !important;
             justify-content: space-between !important;
+            overflow: visible !important;
         }
 
         .logo-section,
@@ -844,6 +854,7 @@
             transform: none !important;
             opacity: 1 !important;
             visibility: visible !important;
+            overflow: visible !important;
         }
 
         .hero {
@@ -851,16 +862,26 @@
             width: 100% !important;
             max-width: 1200px !important;
             margin: 0 auto !important;
-            padding: 70px 20px 40px !important;
+            padding: 54px 20px 40px !important;
             text-align: center !important;
             transform: none !important;
             opacity: 1 !important;
             visibility: visible !important;
             height: auto !important;
+            min-height: auto !important;
+            max-height: none !important;
             overflow: visible !important;
+            position: relative !important;
+            z-index: 1 !important;
         }
 
-        .hero-badge,
+        .hero-badge {
+            display: inline-block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: none !important;
+        }
+
         .winterfell,
         .winterpara {
             display: block !important;
