@@ -505,12 +505,15 @@ body {
     align-items: start;
 }
 
+
 /* Mobile footer left alignment */
-.footer-container {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    text-align: left;
+@media (max-width: 768px) {
+    .footer-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
 }
 
 .footer-col {
@@ -668,15 +671,7 @@ body {
     color: #64748b;
 }
 
-.footer-container .footer-col:nth-child(2) {
-    display: flex;
-    justify-content: center;
-}
 
-.footer-container .footer-col:nth-child(2) .footer-group {
-    align-items: center;
-    text-align: center;
-}
 
 #profileContainer {
     position: fixed;
