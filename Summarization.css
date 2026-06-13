@@ -193,6 +193,12 @@ body {
     box-shadow: var(--shadow-glow);
 }
 
+.hero,
+.summarizer-card {
+    position: relative;
+    z-index: 1;
+}
+
 .winterfell {
     font-size: clamp(38px, 6vw, 64px);
     color: var(--text-primary);
