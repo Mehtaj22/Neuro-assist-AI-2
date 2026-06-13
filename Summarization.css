@@ -817,13 +817,6 @@ textarea:focus {
 }
 
 /* Fix: hidden panel must not contribute to page height */
-.panel-hidden {
-    position: absolute !important;
-    visibility: hidden !important;
-    height: 0 !important;
-    min-height: 0 !important;
-    overflow: hidden !important;
-}
 
 /* Fix: card-glow must not overflow the card boundary */
 .card-glow {
@@ -832,9 +825,6 @@ textarea:focus {
     z-index: 0;
 }
 
-.summarizer-card {
-    overflow: hidden !important;
-}
 
 /* ─── MOBILE ─────────────────────────────────────────────── */
 
