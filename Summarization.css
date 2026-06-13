@@ -796,6 +796,74 @@ body {
     overflow: visible;
 }
 
+/* FIX PAGE OVERFLOW / LEFT CUTTING */
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* FIX NAVBAR */
+.navbar,
+header {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.container,
+.nav-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    box-sizing: border-box;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.logo {
+    white-space: nowrap;
+}
+
+.btns,
+.nav-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+/* FIX MAIN CONTENT */
+.hero,
+.upload-section,
+.tabs,
+.summarizer-wrapper,
+.chat-wrapper {
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+}
+
+/* REMOVE ANY SIDE SHIFT */
+* {
+    box-sizing: border-box;
+}
+
+body>* {
+    max-width: 100%;
+}
+
 @media (max-width: 768px) {
     body {
         overflow-y: auto;
