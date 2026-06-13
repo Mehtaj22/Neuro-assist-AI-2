@@ -780,66 +780,36 @@ body {
 }
 
 /* MOBILE NAVBAR SAME AS HOMEPAGE */
-@media (max-width: 768px) {
+@media (max-width: 980px) {
     .container {
-        position: relative;
-        padding: 24px 20px;
-        overflow: hidden;
-    }
-
-    .container nav {
-        width: 100%;
-        display: flex;
         flex-direction: column;
-        align-items: center;
-        gap: 22px;
-    }
-
-    .logo-section {
-        width: 100%;
-        justify-content: center;
-        display: flex;
-        align-items: center;
-        gap: 14px;
-    }
-
-    .logo {
-        width: 70px;
-        height: 70px;
-    }
-
-    .head {
-        font-size: 28px;
-        line-height: 1.2;
-        text-align: center;
-        white-space: nowrap;
+        gap: 18px;
+        padding: 18px 20px;
     }
 
     .nav {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 28px;
         flex-wrap: wrap;
-    }
-
-    .nav a {
-        font-size: 18px;
-        text-align: center;
+        justify-content: center;
+        gap: 18px;
     }
 
     .btns {
-        width: 100%;
         margin-left: 0;
-        display: flex;
-        justify-content: center;
+    }
+}
+
+@media (max-width: 640px) {
+    .head {
+        font-size: 20px;
     }
 
-    .btns .btn {
+    .btn,
+    .fbutton {
         width: 100%;
-        padding: 18px;
-        font-size: 18px;
-        border-radius: 18px;
+    }
+
+    .btns {
+        flex-direction: column;
+        width: 100%;
     }
 }
