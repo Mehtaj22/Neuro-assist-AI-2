@@ -809,6 +809,71 @@
         overflow: visible;
     }
 
+    /* DESKTOP TOP SECTION RESTORE */
+    @media (min-width: 769px) {
+        .container {
+            position: sticky !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+            max-width: none !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 18px 42px !important;
+            margin: 0 !important;
+            transform: none !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            z-index: 3000 !important;
+        }
+
+        .container nav {
+            width: 100% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+        }
+
+        .logo-section,
+        .anchor,
+        .btns {
+            display: flex !important;
+            align-items: center !important;
+            transform: none !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        .hero {
+            display: block !important;
+            width: 100% !important;
+            max-width: 1200px !important;
+            margin: 0 auto !important;
+            padding: 70px 20px 40px !important;
+            text-align: center !important;
+            transform: none !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            height: auto !important;
+            overflow: visible !important;
+        }
+
+        .hero-badge,
+        .winterfell,
+        .winterpara {
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: none !important;
+        }
+
+        .summarizer-card {
+            margin: 42px auto 80px !important;
+        }
+    }
+
     /* DESKTOP SUMMARY BUTTONS */
     .summary-action-buttons {
         display: flex;
