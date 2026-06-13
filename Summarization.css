@@ -50,12 +50,18 @@
     /* NAVBAR */
 
     .container {
-        position: sticky;
-        top: 0;
+        position: relative;
+
+        width: 100%;
+
         z-index: 1000;
+
         display: flex;
+
         align-items: center;
+
         justify-content: space-between;
+
         padding: 18px 42px;
         background: rgba(2, 6, 23, 0.72);
         backdrop-filter: blur(16px);
@@ -217,7 +223,9 @@
 
     .hero {
         text-align: center;
-        padding: 90px 20px 30px;
+        padding: 60px 20px 40px;
+        max-width: 1200px;
+        margin: 0 auto;
     }
 
     .hero-badge {
@@ -801,343 +809,24 @@
         overflow: visible;
     }
 
-    /* FIX PAGE OVERFLOW / LEFT CUTTING */
-    html,
-    body {
-        width: 100%;
-        max-width: 100%;
-        overflow-x: hidden;
-        margin: 0;
-        padding: 0;
-    }
-
-    /* FIX NAVBAR */
-    .navbar,
-    header {
-        width: 100%;
-        max-width: 100%;
-        overflow: hidden;
-    }
-
-    .container,
-    .nav-container {
-        width: 100%;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 24px;
-        box-sizing: border-box;
-    }
-
-    nav {
+    /* DESKTOP SUMMARY BUTTONS */
+    .summary-action-buttons {
         display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 20px;
+        flex-wrap: wrap;
+        gap: 14px;
+        width: 100%;
+        margin-top: 18px;
     }
 
-    .logo {
+    .summary-action-buttons .sumz {
+        flex: 1 1 180px;
+        min-height: 58px;
+        padding: 14px 18px;
+        font-size: 16px;
         white-space: nowrap;
     }
 
-    .btns,
-    .nav-actions {
-        margin-left: auto;
-        display: flex;
-        align-items: center;
-        gap: 14px;
-    }
-
-    /* FIX MAIN CONTENT */
-    .hero,
-    .upload-section,
-    .tabs,
-    .summarizer-wrapper,
-    .chat-wrapper {
-        width: 100%;
-        max-width: 1200px;
-        margin-left: auto;
-        margin-right: auto;
-        box-sizing: border-box;
-    }
-
-    /* REMOVE ANY SIDE SHIFT */
-    * {
-        box-sizing: border-box;
-    }
-
-    body>* {
-        max-width: 100%;
-    }
-
-    @media (max-width: 768px) {
-        body {
-            overflow-y: auto;
-        }
-
-        .container {
-            position: relative;
-            min-height: auto;
-            padding: 16px;
-        }
-
-        .summarizer-section,
-        .summary-section,
-        .main-container {
-            padding: 20px 16px;
-        }
-
-        .summary-card,
-        .summarizer-card,
-        .tool-card {
-            padding: 24px 18px;
-            border-radius: 28px;
-        }
-
-        .tarea textarea,
-        textarea,
-        #summarizeTextarea,
-        #summaryOutput {
-            width: 100%;
-            min-height: 280px;
-            height: 280px;
-        }
-
-        select,
-        #summaryMode,
-        #languageSelect {
-            width: 100%;
-            height: 56px;
-            font-size: 16px;
-            margin-bottom: 16px;
-        }
-
-        button,
-        .btn,
-        .action-btn,
-        .sumz {
-            width: 100%;
-        }
-
-        .button-row,
-        .action-buttons,
-        .summary-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-            width: 100%;
-        }
-
-        .button-row button,
-        .action-buttons button,
-        .summary-buttons button,
-        .sumz,
-        .btn {
-            width: 100%;
-            min-height: 64px;
-            font-size: 18px;
-            padding: 14px 12px;
-        }
-
-        #stats {
-            font-size: 18px;
-            margin-top: 24px;
-            padding-bottom: 40px;
-        }
-    }
-
-    /* RESPONSIVE */
-
-    @media (max-width: 980px) {
-        .container {
-            padding: 18px 20px;
-            gap: 18px;
-            flex-wrap: wrap;
-        }
-
-        .nav {
-            width: 100%;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 18px;
-        }
-
-        .hero {
-            padding-top: 70px;
-        }
-
-        .summarizer-card {
-            padding: 22px;
-        }
-
-        .panel-wrap {
-            max-width: 100%;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .brand-title {
-            font-size: 20px;
-        }
-
-        .winterpara {
-            font-size: 15px;
-        }
-
-        .summarizer-card {
-            width: calc(100% - 20px);
-            border-radius: 22px;
-        }
-
-        textarea {
-            min-height: 280px;
-            height: 280px;
-            border-radius: 18px;
-        }
-
-        .panel-wrap {
-            min-height: auto;
-            height: auto;
-        }
-
-        #whole {
-            min-height: 520px;
-            height: 520px;
-            padding: 18px;
-            border-radius: 18px;
-        }
-
-        .body {
-            flex: 1;
-        }
-
-        .low {
-            flex-direction: column;
-        }
-
-        #userInput,
-        .send-btn {
-            width: 100%;
-        }
-
-        .message {
-            max-width: 90%;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .logo {
-            width: 48px;
-            height: 48px;
-        }
-
-        .brand-title {
-            font-size: 18px;
-        }
-
-        .nav a {
-            font-size: 14px;
-        }
-
-        .hero-badge {
-            font-size: 12px;
-        }
-
-        .winterfell {
-            font-size: 34px;
-        }
-
-        .summarize-btn {
-            width: 100%;
-        }
-
-        .flux {
-            flex-direction: column;
-        }
-
-        textarea {
-            min-height: 260px;
-            height: 260px;
-        }
-
-        #whole {
-            min-height: 500px;
-            height: 500px;
-        }
-
-        .bot {
-            font-size: 24px;
-        }
-
-        #chatBox {
-            padding: 18px;
-        }
-
-        #userInput {
-            height: 54px;
-            font-size: 14px;
-        }
-
-        .send-btn {
-            height: 54px;
-        }
-    }
-
-    /* FIX MOBILE SUMMARY ACTION BUTTONS */
-    @media (max-width: 768px) {
-        .summarizer-card {
-            width: calc(100% - 20px);
-            max-width: calc(100% - 20px);
-            overflow: hidden;
-        }
-
-        .tarea {
-            overflow: hidden;
-        }
-
-        .tarea>div:has(button),
-        .tarea>div:has(.sumz),
-        .summary-buttons,
-        .action-buttons,
-        .button-row {
-            width: 100%;
-            display: grid !important;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 14px;
-            overflow: hidden;
-        }
-
-        .tarea>div:has(button) button,
-        .tarea>div:has(.sumz) .sumz,
-        .summary-buttons button,
-        .action-buttons button,
-        .button-row button,
-        .sumz {
-            width: 100% !important;
-            min-width: 0 !important;
-            max-width: 100% !important;
-            min-height: 70px;
-            height: auto;
-            padding: 14px 10px;
-            font-size: 18px;
-            line-height: 1.2;
-            white-space: normal;
-            word-break: normal;
-            text-align: center;
-        }
-    }
-
-    @media (max-width: 480px) {
-
-        .tarea>div:has(button),
-        .tarea>div:has(.sumz),
-        .summary-buttons,
-        .action-buttons,
-        .button-row {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    /* FIX MOBILE NAVBAR */
+    /* MOBILE */
     @media (max-width: 768px) {
         .container {
             position: relative;
@@ -1158,10 +847,7 @@
 
         .logo-section {
             width: 100%;
-            display: flex;
-            align-items: center;
             justify-content: flex-start;
-            gap: 12px;
             min-width: 0;
         }
 
@@ -1174,43 +860,89 @@
         .head {
             font-size: clamp(24px, 7vw, 34px);
             line-height: 1.15;
-            word-break: normal;
             overflow-wrap: anywhere;
         }
 
         .btns {
             width: 100%;
-            max-width: 100%;
             margin-left: 0;
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 14px;
         }
 
-        .btns .btn,
-        .btns a.btn,
-        .btns button {
+        .btns .btn {
             width: 100%;
-            min-width: 0;
-            max-width: 100%;
             min-height: 64px;
             padding: 14px 10px;
             border-radius: 18px;
             font-size: 18px;
-            line-height: 1.2;
-            white-space: nowrap;
         }
 
-        .nav {
-            width: 100%;
-            max-width: 100%;
+        .summarizer-card {
+            width: calc(100% - 20px);
+            max-width: calc(100% - 20px);
+            padding: 24px 18px;
+            border-radius: 22px;
             overflow: hidden;
+        }
+
+        #summarizeTextarea {
+            width: 100%;
+            min-height: 280px;
+            height: 280px;
+        }
+
+        select,
+        #summaryMode,
+        #languageSelect {
+            width: 100%;
+            height: 56px;
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+
+        .summary-action-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+            width: 100%;
+        }
+
+        .summary-action-buttons .sumz {
+            width: 100%;
+            min-width: 0;
+            min-height: 70px;
+            padding: 14px 10px;
+            font-size: 18px;
+            white-space: normal;
+        }
+
+        #whole {
+            min-height: 520px;
+            height: 520px;
+            padding: 18px;
+        }
+
+        .low {
+            flex-direction: column;
+        }
+
+        #userInput,
+        .send-btn {
+            width: 100%;
+        }
+
+        #stats {
+            font-size: 18px;
+            margin-top: 24px;
+            padding-bottom: 40px;
         }
     }
 
     @media (max-width: 480px) {
-        .container {
-            padding: 14px 16px;
+        .summary-action-buttons {
+            grid-template-columns: 1fr;
         }
 
         .logo {
@@ -1222,36 +954,20 @@
             font-size: 28px;
         }
 
-        .btns {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .btns .btn,
-        .btns a.btn,
-        .btns button {
+        .btns .btn {
             min-height: 58px;
             font-size: 16px;
-            padding: 12px 8px;
-        }
-    }
-
-    /* DESKTOP ONLY - show summary action buttons */
-    @media (min-width: 769px) {
-        .summary-action-buttons {
-            display: flex !important;
-            flex-wrap: wrap !important;
-            gap: 14px !important;
-            width: 100% !important;
-            margin-top: 18px !important;
         }
 
-        .summary-action-buttons .sumz {
-            flex: 1 1 180px !important;
-            width: auto !important;
-            min-width: 160px !important;
-            min-height: 58px !important;
-            padding: 14px 18px !important;
-            font-size: 16px !important;
-            white-space: nowrap !important;
+        .winterfell {
+            font-size: 34px;
+        }
+
+        .flux {
+            flex-direction: column;
+        }
+
+        .summarize-btn {
+            width: 100%;
         }
     }
